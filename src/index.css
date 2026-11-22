@@ -1,0 +1,274 @@
+@import "tailwindcss";
+
+/* Makes `dark:` utilities follow the .dark class that ThemeToggle puts on <html> */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  /* These were missing: bg-secondary, text-secondary-foreground and
+     text-muted-foreground are used in your components but had no color defined */
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-card: hsl(var(--card));
+  --color-animation: hsl(var(--animation));
+
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-pulse-subtle: pulse-subtle 4s ease-in-out infinite;
+  --animate-fade-in: fade-in 0.7s ease-out 0.2s forwards;
+  --animate-fade-in-delay-1: fade-in 0.7s ease-out 0.2s forwards;
+  --animate-fade-in-delay-2: fade-in 0.7s ease-out 0.4s forwards;
+  --animate-fade-in-delay-3: fade-in 0.7s ease-out 0.6s forwards;
+  --animate-fade-in-delay-4: fade-in 0.7s ease-out 0.8s forwards;
+  --animate-meteor: meteor 5s linear infinite;
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  @keyframes pulse-subtle {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.8;
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes meteor {
+    0% {
+      transform: rotate(215deg) translateX(0);
+      opacity: 1;
+    }
+    70% {
+      opacity: 1;
+    }
+    100% {
+      transform: rotate(215deg) translateX(-500px);
+      opacity: 0;
+    }
+  }
+}
+
+@keyframes grow {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+@layer base {
+  /* ---------- Light mode: soft lavender-white, deep ink text, violet accent ---------- */
+  :root {
+    --background: 245 35% 95%;
+    --foreground: 235 30% 14%;
+    --card: 0 0% 100%;
+    --primary: 250 60% 52%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 245 35% 91%;
+    --secondary-foreground: 235 30% 20%;
+    --muted-foreground: 235 12% 40%;
+    --border: 240 22% 90%;
+    --input: 240 22% 86%;
+    --animation: 250 60% 52%;
+    color-scheme: light;
+  }
+
+  /* ---------- Dark mode (your original values, plus the new tokens) ---------- */
+  .dark {
+    --background: 222 47% 4%;
+    --foreground: 213 31% 91%;
+    --card: 222 47% 8%;
+    --primary: 250 65% 65%;
+    --primary-foreground: 213 31% 91%;
+    --secondary: 217 33% 14%;
+    --secondary-foreground: 213 31% 91%;
+    --muted-foreground: 215 20% 65%;
+    --border: 217 33% 20%;
+    --input: 217 33% 20%;
+    --animation: 250 65% 65%;
+    color-scheme: dark;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply scroll-smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground transition-colors duration-300;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+@utility container {
+  margin-inline: auto;
+  padding-inline: 2rem;
+
+  @media (width >= 640px) {
+    max-width: 640px;
+  }
+  @media (width >= 768px) {
+    max-width: 768px;
+  }
+  @media (width >= 1024px) {
+    max-width: 1024px;
+  }
+  @media (width >= 1280px) {
+    max-width: 1280px;
+  }
+  @media (width >= 1400px) {
+    max-width: 1400px;
+  }
+}
+
+@utility text-glow {
+  @apply relative;
+  text-shadow: 0 0 10px rgba(167, 139, 250, 0.5);
+}
+
+@utility card-hover {
+  @apply transition-transform duration-300 hover:scale-[1.02] hover:shadow-lg;
+}
+
+@utility gradient-border {
+  @apply relative rounded-md;
+  background: linear-gradient(to right, hsl(var(--card)), hsl(var(--card)));
+  background-clip: padding-box;
+  border: 1px solid transparent;
+}
+
+@utility cosmic-button {
+  @apply px-6 py-2 rounded-full bg-primary text-primary-foreground font-medium
+         transition-all duration-300 hover:shadow-[0_0_10px_rgba(139,92,246,0.5)]
+         hover:scale-[1.02] active:scale-95;
+}
+
+@utility star {
+  @apply absolute rounded-full  bg-white;
+  box-shadow: 0 0 10px 2px rgba(255, 255, 0, 0.4);
+}
+
+@utility meteor {
+  @apply absolute bg-linear-to-r from-white via-white to-transparent rounded-full;
+  box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.3);
+}
+
+#root {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  text-align: center;
+}
+
+/* =====================================================================
+   Light mode polish. Every rule is scoped to html:not(.dark),
+   so dark mode looks exactly as it did before.
+   ===================================================================== */
+
+/* White stars and meteors (with yellow glows) don't belong on a light background */
+html:not(.dark) .star,
+html:not(.dark) .meteor {
+  display: none;
+}
+
+/* Pastel blobs that drift, swell and shift color. Two layers run on
+   different timings so the motion feels organic. Only transform and
+   filter are animated, which the GPU handles smoothly. */
+@keyframes blob-a {
+  0%   { transform: translate3d(-4%, -3%, 0) scale(0.85); filter: hue-rotate(0deg); }
+  100% { transform: translate3d(5%, 4%, 0) scale(1.35);   filter: hue-rotate(35deg); }
+}
+@keyframes blob-b {
+  0%   { transform: translate3d(4%, 3%, 0) scale(1.3);    filter: hue-rotate(0deg); }
+  100% { transform: translate3d(-5%, -4%, 0) scale(0.85); filter: hue-rotate(-40deg); }
+}
+
+html:not(.dark) body::before,
+html:not(.dark) body::after {
+  content: "";
+  position: fixed;
+  inset: -15%;
+  z-index: -2;
+  pointer-events: none;
+  will-change: transform, filter;
+}
+
+html:not(.dark) body::before {
+  background:
+    radial-gradient(52rem 39rem at 19% 17%, hsl(255 90% 80% / 0.85),  transparent 62%),
+    radial-gradient(47rem 36rem at 81% 21%, hsl(320 85% 84% / 0.70), transparent 62%);
+  animation: blob-a 16s ease-in-out infinite alternate;
+}
+html:not(.dark) body::after {
+  background:
+    radial-gradient(50rem 39rem at 76% 81%, hsl(210 95% 80% / 0.75), transparent 62%),
+    radial-gradient(39rem 31rem at 21% 80%, hsl(25 100% 83% / 0.65),  transparent 62%);
+  animation: blob-b 22s ease-in-out infinite alternate;
+}
+
+/* A faint dot grid that fades out toward the edges, for texture.
+   It lives on <html> so it can sit above the blobs. */
+html:not(.dark)::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(hsl(250 30% 40% / 0.09) 1px, transparent 1px);
+  background-size: 26px 26px;
+  -webkit-mask-image: radial-gradient(ellipse at 50% 40%, #000 25%, transparent 75%);
+  mask-image: radial-gradient(ellipse at 50% 40%, #000 25%, transparent 75%);
+}
+
+/* A glow on dark text just looks smudgy */
+html:not(.dark) .text-glow {
+  text-shadow: none;
+}
+
+/* White cards need a hairline edge and a whisper of shadow to lift off the page */
+html:not(.dark) .gradient-border {
+  border-color: hsl(var(--border));
+  box-shadow:
+    0 1px 2px hsl(240 30% 20% / 0.04),
+    0 10px 28px -14px hsl(250 40% 30% / 0.14);
+}
+
+html:not(.dark) .card-hover:hover {
+  box-shadow:
+    0 1px 2px hsl(240 30% 20% / 0.05),
+    0 18px 38px -14px hsl(250 45% 35% / 0.24);
+}
+
+/* Violet-tinted lift under the primary button instead of a neon halo */
+html:not(.dark) .cosmic-button:hover {
+  box-shadow: 0 10px 24px -8px hsl(250 60% 52% / 0.55);
+}
+
+html:not(.dark) ::selection {
+  background: hsl(250 60% 52% / 0.18);
+}
